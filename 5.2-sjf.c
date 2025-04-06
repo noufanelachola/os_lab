@@ -1,32 +1,21 @@
 #include <stdio.h>
+#include <limits.h>
 
 struct process{
 	int pid,at,bt,ct,tat,wt;
-} processArray[20], temp;
+} processArray[20], temp, pArray[20];
 
-int i,j,n,time = 0,completed = 0,ind;
+int i,j,n,time = 0,completed = 0,ind,shortest,l=0;
 float tat,wt;
+
+void insert();
 
 int main(){
 
-	printf("Enter number of process : ");
-	scanf("%d",&n);
-
-	//Read processes
-	printf("Enter processes :\n");
-	for(i=0;i<n;i++){
-		printf("P%d : ",i+1);
-		scanf("%d",&processArray[i].pid);
-	
-		printf("Enter the Arrival Time : ");
-		scanf("%d",&processArray[i].at);
-
-		printf("Enter the Burst Time : ");
-		scanf("%d",&processArray[i].bt);
-	}
+	insert();
 
 	//Sort
-	for(i=0;i<n;i++){
+	for(i=0;i<n-1;i++){
 		for(j=i+1;j<n;j++){
 			if(processArray[i].at > processArray[j].at || (processArray[i].at==processArray[j].at && processArray[i].bt>processArray[j].bt)){
 				temp = processArray[i];
@@ -37,46 +26,61 @@ int main(){
 	}
 	
 	
-	while(completed < n){
-        int shortest = 1e9;
+	while(completed<n){
+        shortest = INT_MAX;
         ind = -1;
-    
+        
         for(i=0;i<n;i++){
-            if(processArray[i].at <= time && processArray[i].ct == 0){
-                if(processArray[i].bt < shortest){
-                    shortest = processArray[i].bt;
-                    ind = i;
-                }
+            if(processArray[i].at <= time && processArray[i].bt < shortest && processArray[i].ct == 0){
+                shortest = processArray[i].bt;
+                ind = i;
             }
         }
-    
+
         if(ind != -1){
             processArray[ind].ct = time + processArray[ind].bt;
             processArray[ind].tat = processArray[ind].ct - processArray[ind].at;
             processArray[ind].wt = processArray[ind].tat - processArray[ind].bt;
-    
+            
+            time += processArray[ind].bt;
+            pArray[l] = processArray[ind];
             tat += processArray[ind].tat;
             wt += processArray[ind].wt;
-    
-            printf("Time = %d, PID = %d, CT = %d\n", time, processArray[ind].pid, processArray[ind].ct);
-    
-            time = processArray[ind].ct;
+            l++;
             completed++;
         } else {
-            time++; 
+            time++;
         }
+
     }
     
 	tat = tat/n;
 	wt = wt/n;
 
 	//Show processes	
-	printf("Answer is :\n ");
+	printf("\nAnswer is :\n ");
 	printf("PID\tAt\tBT\tCT\tTAT\tWT\n");
 	for(i=0;i<n;i++){
-		printf("%d\t%d\t%d\t%d\t%d\t%d\n",processArray[i].pid,processArray[i].at,processArray[i].bt,processArray[i].ct,processArray[i].tat,processArray[i].wt);
+		printf("%d\t%d\t%d\t%d\t%d\t%d\n",pArray[i].pid,pArray[i].at,pArray[i].bt,pArray[i].ct,pArray[i].tat,pArray[i].wt);
 	}
 
 	printf("Avg TAT : %f , Avg WT : %f",tat,wt);
 
+}
+
+void insert(){
+    printf("Enter total number of processes : ");
+    scanf("%d",&n);
+
+    printf("\nEnter the processes : ");
+    for(i=0;i<n;i++){
+        printf("\nEnter PID of P%d : ",i+1);
+        scanf("%d",&processArray[i].pid);
+
+        printf("Enter arrival time of P%d : ",i+1);
+        scanf("%d",&processArray[i].at);
+
+        printf("Enter burst time of P%d : ",i+1);
+        scanf("%d",&processArray[i].bt);
+    }
 }
