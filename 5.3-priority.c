@@ -2,7 +2,7 @@
 #include <limits.h>
 
 struct process{
-	int pid,at,bt,ct,tat,wt;
+	int pid,at,bt,pr,ct,tat,wt;
 } processArray[20], temp, pArray[20];
 
 int i,j,n,time = 0,completed = 0,ind,shortest,l=0;
@@ -15,13 +15,13 @@ int main(){
 	insert();
 	
 	while(completed<n){
-        shortest = INT_MAX;
         ind = -1;
         
         for(i=0;i<n;i++){
-            if(processArray[i].at <= time && processArray[i].bt < shortest && processArray[i].ct == 0){
-                shortest = processArray[i].bt;
-                ind = i;
+            if(processArray[i].at <= time && processArray[i].ct == 0){
+                if(ind == -1 || processArray[i].pr < processArray[ind].pr){
+                    ind = i;
+                }
             }
         }
 
@@ -47,9 +47,9 @@ int main(){
 
 	//Show processes	
 	printf("\nAnswer is :\n ");
-	printf("PID\tAt\tBT\tCT\tTAT\tWT\n");
+	printf("PID\tAt\tBT\tPR\tCT\tTAT\tWT\n");
 	for(i=0;i<n;i++){
-		printf("%d\t%d\t%d\t%d\t%d\t%d\n",pArray[i].pid,pArray[i].at,pArray[i].bt,pArray[i].ct,pArray[i].tat,pArray[i].wt);
+		printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",pArray[i].pid,pArray[i].at,pArray[i].bt,pArray[i].pr,pArray[i].ct,pArray[i].tat,pArray[i].wt);
 	}
 
 	printf("Avg TAT : %f , Avg WT : %f",tat,wt);
@@ -76,5 +76,8 @@ void insert(){
 
         printf("Enter burst time of P%d : ",i+1);
         scanf("%d",&processArray[i].bt);
+
+        printf("Enter priority of P%d : ",i+1);
+        scanf("%d",&processArray[i].pr);
     }
 }
