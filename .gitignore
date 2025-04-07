@@ -4,3 +4,4 @@
 3.1-fork.c
 3.2-execv.exe
 8.1-fifo.exe
+8.2-lru.exe
